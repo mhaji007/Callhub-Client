@@ -5,6 +5,7 @@ function Login({
   user: { username, mobileNumber, verificationCode, verificationSent },
   setUser,
   sendSmsCode,
+  sendVerificationCode
 }) {
   // draft => coming from immer
   // event => React's synthetic event
@@ -28,7 +29,7 @@ function Login({
               fluid
               icon="user"
               iconPosition="left"
-              placeHolder="Username"
+              placeholder="Username"
               value={username}
               onChange={(event, data) => populateFields(event, data)}
               name="username"
@@ -55,8 +56,13 @@ function Login({
                 name="verificationCode"
               />
             )}
-            <Button color="blue" fluid size="large" onClick={sendSmsCode}>
-              Login/Signup
+            <Button
+              color="blue"
+              fluid
+              size="large"
+              onClick={!verificationSent ? sendSmsCode : sendVerificationCode}
+            >
+              {!verificationSent ? "Login/Signup" : "Enter your code"}
             </Button>
           </Segment>
         </Form>
