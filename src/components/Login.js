@@ -1,14 +1,18 @@
 import React from "react";
 import { Grid, Header, Segment, Form, Button } from "semantic-ui-react";
 
-function Login({user:{username, mobileNumber}, setUser, sendSmsCode}) {
+function Login({
+  user: { username, mobileNumber, verificationCode, verificationSent },
+  setUser,
+  sendSmsCode,
+}) {
   // draft => coming from immer
   // event => React's synthetic event
   // data => Since semantic ui is used here
   function populateFields(event, data) {
     setUser((draft) => {
-      draft[data.name] = data.value
-    })
+      draft[data.name] = data.value;
+    });
   }
 
   return (
@@ -26,19 +30,31 @@ function Login({user:{username, mobileNumber}, setUser, sendSmsCode}) {
               iconPosition="left"
               placeHolder="Username"
               value={username}
-              onChange={(event,data) => populateFields(event,data)}
+              onChange={(event, data) => populateFields(event, data)}
               name="username"
-
-              />
+            />
             <Form.Input
               fluid
               icon="mobile alternate"
               iconPosition="left"
               placeholder="Mobile number"
               value={mobileNumber}
-              onChange={(event,data) => populateFields(event,data)}
+              onChange={(event, data) => populateFields(event, data)}
               name="mobileNumber"
             />
+            {/* If verification code is sent, display an
+            input field for the user to enter the verification code */}
+            {verificationSent && (
+              <Form.Input
+                fluid
+                icon="key"
+                iconPosition="left"
+                placeholder="Enter your code"
+                value={verificationCode}
+                onChange={(event, data) => populateFields(event, data)}
+                name="verificationCode"
+              />
+            )}
             <Button color="blue" fluid size="large" onClick={sendSmsCode}>
               Login/Signup
             </Button>
