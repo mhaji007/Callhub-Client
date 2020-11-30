@@ -1,8 +1,8 @@
 import React from "react";
 import { Grid, Header, Segment, Form, Button } from "semantic-ui-react";
 
-function Login({user:{username, mobileNumber}, setUser}) {
-  // draft => coing from immer
+function Login({user:{username, mobileNumber}, setUser, sendSmsCode}) {
+  // draft => coming from immer
   // event => React's synthetic event
   // data => Since semantic ui is used here
   function populateFields(event, data) {
@@ -39,7 +39,7 @@ function Login({user:{username, mobileNumber}, setUser}) {
               onChange={(event,data) => populateFields(event,data)}
               name="mobileNumber"
             />
-            <Button color="blue" fluid size="large">
+            <Button color="blue" fluid size="large" onClick={sendSmsCode}>
               Login/Signup
             </Button>
           </Segment>
