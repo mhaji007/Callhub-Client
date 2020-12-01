@@ -3,6 +3,7 @@ import Login from "./components/Login";
 import { useImmer } from "use-immer";
 import axios from "./utils/Axios";
 import socket from "./utils/Socketio";
+import useLocalStorage from './hooks/useLocalStorage'
 
 function App() {
   useEffect(() => {
@@ -11,7 +12,7 @@ function App() {
     });
     return () => {};
   }, []);
-
+  const [token, setToken] = useState();
   // State for storing username and mobile number
   // of the user entered in the login form
   const [user, setUser] = useImmer({
@@ -20,6 +21,9 @@ function App() {
     verificationCode: "",
     verificationSent: false,
   });
+
+  const [storedToken, setStoredToken] = useLocalStorage('token', null);
+
   // Function to send user's credentials along
   // with channel type to server to request for
   // a verification code
