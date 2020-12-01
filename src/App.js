@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Login from "./components/Login";
 import { useImmer } from "use-immer";
 import axios from "./utils/Axios";
+import socket from "./utils/Socketio";
 
 function App() {
+  useEffect(() => {
+    socket.on("disconnect", () => {
+      console.log("Socket disconnected");
+    });
+    return () => {};
+  }, []);
+
   // State for storing username and mobile number
   // of the user entered in the login form
   const [user, setUser] = useImmer({
