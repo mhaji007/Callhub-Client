@@ -8,7 +8,7 @@ import useLocalStorage from './hooks/useLocalStorage'
 function App() {
   // State for storing token received from server
   // after code verification
-  const [token, setToken] = useState();
+  // const [token, setToken] = useState();
 
   // State for storing username and mobile number
   // of the user entered in the login form
@@ -19,7 +19,7 @@ function App() {
     verificationSent: false,
   });
 
-  // const [storedToken, setStoredToken] = useLocalStorage('token', null);
+  const [storedToken, setStoredToken] = useLocalStorage('token', null);
 
   // Upon component mounting listen
   // on socket for disconnect event
@@ -61,12 +61,13 @@ function App() {
     });
 
     console.log("Received token", response.data.token);
-    setToken(response.data.token)
+    setStoredToken(response.data.token)
   }
 
   return (
     <div>
-      {/* State and function requesting the verification code is passed onto the login form */}
+      {/* State and function requesting the verification
+      code is passed onto the login form */}
       <Login
         user={user}
         setUser={setUser}
