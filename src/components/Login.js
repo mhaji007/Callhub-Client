@@ -5,7 +5,7 @@ function Login({
   user: { username, mobileNumber, verificationCode, verificationSent },
   setUser,
   sendSmsCode,
-  sendVerificationCode
+  sendVerificationCode,
 }) {
   // draft => coming from immer
   // event => React's synthetic event

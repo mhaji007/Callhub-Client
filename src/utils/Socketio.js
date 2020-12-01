@@ -2,14 +2,12 @@
 // backend via socket io
 
 // import io from 'socket.io-client';
-// export default io.connect(`http://localhost:3002`);
+// export default io.connect(`${process.env.REACT_APP_API}`);
 
 import io from "socket.io-client";
-export default io.connect(`http://localhost:3002`, {
+export default io.connect(`${process.env.REACT_APP_API}`, {
   cors: {
-    origin: "http://localhost:3002",
+    origin: `${process.env.REACT_APP_API}`,
     credentials: true,
   },
 });
-
-
