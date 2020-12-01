@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Login from "./components/Login";
+import CallCenter from "./components/CallCenter";
 import { useImmer } from "use-immer";
 import axios from "./utils/Axios";
 import socket from "./utils/Socketio";
@@ -69,7 +70,7 @@ function App() {
       {/* State and function requesting the verification
       code is passed onto the login form */}
       {storedToken ? (
-        <h1>Call hub</h1>
+        <CallCenter/>
       ) : (
         <Login
           user={user}
