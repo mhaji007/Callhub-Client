@@ -3,7 +3,7 @@ import Login from "./components/Login";
 import { useImmer } from "use-immer";
 import axios from "./utils/Axios";
 import socket from "./utils/Socketio";
-import useLocalStorage from './hooks/useLocalStorage'
+import useLocalStorage from "./hooks/useLocalStorage";
 
 function App() {
   // State for storing token received from server
@@ -19,7 +19,7 @@ function App() {
     verificationSent: false,
   });
 
-  const [storedToken, setStoredToken] = useLocalStorage('token', null);
+  const [storedToken, setStoredToken] = useLocalStorage("token", null);
 
   // Upon component mounting listen
   // on socket for disconnect event
@@ -61,19 +61,23 @@ function App() {
     });
 
     console.log("Received token", response.data.token);
-    setStoredToken(response.data.token)
+    setStoredToken(response.data.token);
   }
 
   return (
     <div>
       {/* State and function requesting the verification
       code is passed onto the login form */}
-      <Login
-        user={user}
-        setUser={setUser}
-        sendSmsCode={sendSmsCode}
-        sendVerificationCode={sendVerificationCode}
-      />
+      {storedToken ? (
+        <h1>Call hub</h1>
+      ) : (
+        <Login
+          user={user}
+          setUser={setUser}
+          sendSmsCode={sendSmsCode}
+          sendVerificationCode={sendVerificationCode}
+        />
+      )}
     </div>
   );
 }
