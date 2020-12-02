@@ -7,12 +7,18 @@ import socket from "./utils/Socketio";
 import useLocalStorage from "./hooks/useLocalStorage";
 
 function App() {
+  // State for storing calls (req.body) object
+  // sent back from calls-new endpoint
+  const [calls, setCalls] = useImmer({
+    calls: [],
+  });
   // State for storing token received from server
   // after code verification
   // const [token, setToken] = useState();
 
   // State for storing username and mobile number
-  // of the user entered in the login form
+  // of the user entered in the login form as well
+  // as verification status of the code
   const [user, setUser] = useImmer({
     username: "",
     mobileNumber: "",
@@ -27,6 +33,14 @@ function App() {
   useEffect(() => {
     socket.on("disconnect", () => {
       console.log("Socket disconnected");
+    });
+    // Receives the data that is sent back
+    // from new-call endpoint that handles Twilio's
+    // webhook call and stores it in local state
+    socket.on("call-new", (data) => {
+      setCalls((draft) => {
+        draft.calls.push(data);
+      });
     });
     return () => {};
   }, []);
@@ -70,7 +84,7 @@ function App() {
       {/* State and function requesting the verification
       code is passed onto the login form */}
       {storedToken ? (
-        <CallCenter/>
+        <CallCenter />
       ) : (
         <Login
           user={user}
@@ -79,6 +93,15 @@ function App() {
           sendVerificationCode={sendVerificationCode}
         />
       )}
+      {/* map through the calls
+      first calls is our local state
+      which is in fact the body object sent back
+      from server's new-calls endpoint upon receiving a call
+      second call is a property on that object
+      that is sent back from server */}
+      {calls.calls.map((call) => (
+        <h1> {call.CallSid}</h1>
+      ))}
     </div>
   );
 }
