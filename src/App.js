@@ -100,7 +100,7 @@ function App() {
       second call is a property on that object
       that is sent back from server */}
       {calls.calls.map((call) => (
-        <h1> {call.CallSid}</h1>
+        <h1> {call.data.CallSid}</h1>
       ))}
     </div>
   );
