@@ -84,7 +84,7 @@ function App() {
       {/* State and function requesting the verification
       code is passed onto the login form */}
       {storedToken ? (
-        <CallCenter />
+        <CallCenter calls={calls} />
       ) : (
         <Login
           user={user}
@@ -99,9 +99,7 @@ function App() {
       from server's new-calls endpoint upon receiving a call
       second call is a property on that object
       that is sent back from server */}
-      {calls.calls.map((call) => (
-        <h1> {call.data.CallSid}</h1>
-      ))}
+
     </div>
   );
 }
