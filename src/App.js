@@ -42,6 +42,12 @@ function App() {
         draft.calls.push(data);
       });
     });
+
+    socket.on("enqueue", (data) => {
+      setCalls((draft) => {
+        draft.calls[draft.calls.findIndex(({callSid})=>callSid === data.callSid)].data.CallStaus ="enqueued"
+      });
+    });
     return () => {};
   }, []);
 
