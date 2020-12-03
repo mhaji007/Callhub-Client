@@ -37,15 +37,22 @@ function App() {
     // Receives the data that is sent back
     // from new-call endpoint that handles Twilio's
     // webhook call and stores it in local state
-    socket.on("call-new", (data) => {
+    // Destructure CallSid and CallStatus from data
+    socket.on("call-new", ({data:{ CallSid, CallStatus }}) => {
       setCalls((draft) => {
-        draft.calls.push(data);
+        draft.calls.push({ CallSid, CallStatus });
       });
     });
 
-    socket.on("enqueue", (data) => {
+    socket.on('enqueue', ({ data: { CallSid } }) => {
       setCalls((draft) => {
-        draft.calls[draft.calls.findIndex(({callSid})=>callSid === data.callSid)].data.CallStaus ="enqueued"
+        const index = draft.calls.findIndex(
+          ({ CallSid }) => CallSid === CallSid
+        );
+        if (index === -1) {
+          return;
+        }
+        draft.calls[index].CallStatus = 'enqueue';
       });
     });
     return () => {};
@@ -105,7 +112,6 @@ function App() {
       from server's new-calls endpoint upon receiving a call
       second call is a property on that object
       that is sent back from server */}
-
     </div>
   );
 }
