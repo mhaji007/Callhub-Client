@@ -10,19 +10,21 @@ function CallProgress({call}) {
           title="Ringing"
           description={call.CallSid}
           // description={call.data.From}
-          completed
+          active={call.CallStatus==="ringing"}
+          completed={call.CallStatus !=="ringing"}
         />
         <Step
           icon="cogs"
           title="In queue"
           description=" User waiting in queue"
-          active
+          active = {call.CallStatus ==="enqueue"}
+          disabled={call.CallStatus === "ringing"}
         />
         <Step
           icon="headphones"
           title="Answered"
           description=" Answered by John"
-          disabled
+          disabled = {call.CallStatus === "ringing" || call.CallStatus === "enqueue"}
         />
         <Step icon="times" title="Hang up" description=" Missed call" />
       </Step.Group>
