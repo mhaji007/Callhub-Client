@@ -27,7 +27,23 @@ function App() {
   });
 
   // const [storedToken, setStoredToken] = useLocalStorage("token", null);
-  const [storedToken, setStoredToken, isValidToken] = useTokenFromLocalStorage( null);
+  const [storedToken, setStoredToken, isValidToken] = useTokenFromLocalStorage(
+    null
+  );
+
+  // Before our application was broadcasting the event to anyone that wants to hear
+  // what we need to do now is to use this token so only people with a valid token
+  // can listen to some (or all) of the events, for any page, or to be more exact any
+  // application that tries to connect to the socket
+
+  useEffect(() => {
+    if (isValidToken) {
+      console.log("Valid token");
+      socket.addToken(storedToken);
+    }
+    console.log("Invalid token");
+    socket.removeToken();
+  }, [isValidToken, storedToken]);
 
   // Upon component mounting listen
   // on socket for disconnect event
@@ -39,14 +55,13 @@ function App() {
     // from new-call endpoint that handles Twilio's
     // webhook call and stores it in local state
     // Destructure CallSid and CallStatus from data
-    socket.client.on("call-new", ({data:{ CallSid, CallStatus }}) => {
+    socket.client.on("call-new", ({ data: { CallSid, CallStatus } }) => {
       setCalls((draft) => {
         draft.calls.push({ CallSid, CallStatus });
       });
     });
 
-
-    socket.client.on('enqueue', ({ data: { CallSid } }) => {
+    socket.client.on("enqueue", ({ data: { CallSid } }) => {
       setCalls((draft) => {
         const index = draft.calls.findIndex(
           ({ CallSid }) => CallSid === CallSid
@@ -54,7 +69,7 @@ function App() {
         if (index === -1) {
           return;
         }
-        draft.calls[index].CallStatus = 'enqueue';
+        draft.calls[index].CallStatus = "enqueue";
       });
     });
     return () => {};
@@ -108,7 +123,7 @@ function App() {
           sendVerificationCode={sendVerificationCode}
         />
       )}
-      {/* map through the calls
+      {/* Map through the calls
       first calls is our local state
       which is in fact the body object sent back
       from server's new-calls endpoint upon receiving a call
