@@ -4,7 +4,7 @@ import CallCenter from "./components/CallCenter";
 import { useImmer } from "use-immer";
 import axios from "./utils/Axios";
 import socket from "./utils/Socketio";
-import useTokenFromLocalStorage from "./hooks/useLocalStorage";
+import useTokenFromLocalStorage from "./hooks/useTokenFromLocalStorage";
 
 function App() {
   // State for storing calls (req.body) object
@@ -32,20 +32,21 @@ function App() {
   // Upon component mounting listen
   // on socket for disconnect event
   useEffect(() => {
-    socket.on("disconnect", () => {
+    socket.client.on("disconnect", () => {
       console.log("Socket disconnected");
     });
     // Receives the data that is sent back
     // from new-call endpoint that handles Twilio's
     // webhook call and stores it in local state
     // Destructure CallSid and CallStatus from data
-    socket.on("call-new", ({data:{ CallSid, CallStatus }}) => {
+    socket.client.on("call-new", ({data:{ CallSid, CallStatus }}) => {
       setCalls((draft) => {
         draft.calls.push({ CallSid, CallStatus });
       });
     });
 
-    socket.on('enqueue', ({ data: { CallSid } }) => {
+
+    socket.client.on('enqueue', ({ data: { CallSid } }) => {
       setCalls((draft) => {
         const index = draft.calls.findIndex(
           ({ CallSid }) => CallSid === CallSid

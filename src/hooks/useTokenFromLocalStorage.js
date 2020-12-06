@@ -1,6 +1,6 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from "react";
 import useLocalStorage from "./useLocalStorage";
-import Axios from '../utils/Axios'
+import Axios from "../utils/Axios";
 
 function useTokenFromLocalStorage(initialValue) {
   const [value, setValue] = useLocalStorage("token", initialValue);
@@ -11,13 +11,12 @@ function useTokenFromLocalStorage(initialValue) {
   }, [value]);
 
   async function checkToken() {
-  const {data} = await Axios.post("./check-token", {token: value})
+    const { data } = await Axios.post("./check-token", { token: value });
     console.log("Check token", data);
-    setValid(data.isValid)
+    setIsValid(data.isValid);
+  }
+
+  return [value, setValue, isValid];
 }
 
-
-return [value, setValue, isValid]
-}
-
-export default useTokenFromLocalStorage
+export default useTokenFromLocalStorage;
