@@ -4,7 +4,7 @@ import CallCenter from "./components/CallCenter";
 import { useImmer } from "use-immer";
 import axios from "./utils/Axios";
 import socket from "./utils/Socketio";
-import useLocalStorage from "./hooks/useLocalStorage";
+import useTokenFromLocalStorage from "./hooks/useLocalStorage";
 
 function App() {
   // State for storing calls (req.body) object
@@ -26,7 +26,8 @@ function App() {
     verificationSent: false,
   });
 
-  const [storedToken, setStoredToken] = useLocalStorage("token", null);
+  // const [storedToken, setStoredToken] = useLocalStorage("token", null);
+  const [storedToken, setStoredToken, isValidToken] = useTokenFromLocalStorage( null);
 
   // Upon component mounting listen
   // on socket for disconnect event
@@ -96,7 +97,7 @@ function App() {
     <div>
       {/* State and function requesting the verification
       code is passed onto the login form */}
-      {storedToken ? (
+      {isValidToken ? (
         <CallCenter calls={calls} />
       ) : (
         <Login
