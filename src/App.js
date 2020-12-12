@@ -5,6 +5,7 @@ import { useImmer } from "use-immer";
 import axios from "./utils/Axios";
 import socket from "./utils/Socketio";
 import useTokenFromLocalStorage from "./hooks/useTokenFromLocalStorage";
+import * as Twilio from "twilio-client";
 
 function App() {
   // State for storing calls (req.body) object
@@ -26,6 +27,8 @@ function App() {
     verificationSent: false,
   });
 
+    const [twilioToken, setTwilioToken] = useState();
+
   // const [storedToken, setStoredToken] = useLocalStorage("token", null);
   const [storedToken, setStoredToken, isValidToken] = useTokenFromLocalStorage(
     null
@@ -35,6 +38,15 @@ function App() {
   // what we need to do now is to use this token so only people with a valid token
   // can listen to some (or all) of the events, for any page, or to be more exact any
   // application that tries to connect to the socket
+
+
+    useEffect(() => {
+      console.log("Twilio token changed");
+      if (twilioToken) {
+        connectTwilioVoiceClient(twilioToken);
+      }
+    }, [twilioToken]);
+
 
   useEffect(() => {
     if (isValidToken) {
@@ -48,8 +60,17 @@ function App() {
   // Upon component mounting listen
   // on socket for disconnect event
   useEffect(() => {
+    socket.client.on("connect", () => {
+      console.log("Connected");
+    });
+
     socket.client.on("disconnect", () => {
       console.log("Socket disconnected");
+    });
+    // Event coming from backend
+    socket.client.on("twilio-token", (data) => {
+      console.log("Receive Token from the backend");
+      setTwilioToken(data.token);
     });
     // Receives the data that is sent back
     // from new-call endpoint that handles Twilio's
@@ -73,7 +94,7 @@ function App() {
       });
     });
     return () => {};
-  }, []);
+  }, [socket.client]);
 
   // Function to send user's credentials along
   // with channel type to server to request for
@@ -92,6 +113,18 @@ function App() {
       draft.verificationSent = true;
     });
   }
+
+  function connectTwilioVoiceClient(twilioToken) {
+    const device = new Twilio.Device(twilioToken, { debug: true });
+    device.on("error", (error) => {
+      console.error(error);
+    });
+    device.on("incoming", (connection) => {
+      console.log("Incoming from twilio");
+      connection.accept();
+    });
+  }
+
   // Function to send back the code
   // to server to request verification
   // and receive a jwt token.
