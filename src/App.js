@@ -27,7 +27,7 @@ function App() {
     verificationSent: false,
   });
 
-    const [twilioToken, setTwilioToken] = useState();
+  const [twilioToken, setTwilioToken] = useState();
 
   // const [storedToken, setStoredToken] = useLocalStorage("token", null);
   const [storedToken, setStoredToken, isValidToken] = useTokenFromLocalStorage(
@@ -39,14 +39,12 @@ function App() {
   // can listen to some (or all) of the events, for any page, or to be more exact any
   // application that tries to connect to the socket
 
-
-    useEffect(() => {
-      console.log("Twilio token changed");
-      if (twilioToken) {
-        connectTwilioVoiceClient(twilioToken);
-      }
-    }, [twilioToken]);
-
+  useEffect(() => {
+    console.log("Twilio token changed");
+    if (twilioToken) {
+      connectTwilioVoiceClient(twilioToken);
+    }
+  }, [twilioToken]);
 
   useEffect(() => {
     if (isValidToken) {
@@ -67,6 +65,12 @@ function App() {
     socket.client.on("disconnect", () => {
       console.log("Socket disconnected");
     });
+
+    socket.client.on("twilio-token", (data) => {
+      console.log("Receive Token from the backend");
+      setTwilioToken(data.token);
+    });
+
     // Event coming from backend
     socket.client.on("twilio-token", (data) => {
       console.log("Receive Token from the backend");

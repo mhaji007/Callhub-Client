@@ -11,11 +11,10 @@ function useTokenFromLocalStorage(initialValue) {
   }, [value]);
 
   async function checkToken() {
-    const { data } = await Axios.post("./check-token", { token: value });
-    console.log("Check token", data);
+    const { data } = await Axios.post("/check-token", { token: value });
+    console.log("CheckToken", data);
     setIsValid(data.isValid);
   }
-
   return [value, setValue, isValid];
 }
 
